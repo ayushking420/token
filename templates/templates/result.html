@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tokens Generated</title>
+    <style>
+        body { background:#020617; color:white; font-family:Arial }
+        .box { width:700px; margin:50px auto; background:#0f172a; padding:20px; border-radius:10px }
+        .token { background:#020617; padding:10px; margin:8px 0; border-radius:6px }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>✅ Login Successful (DEMO)</h2>
+        <p><b>Email:</b> {{ email }}</p>
+        <p><b>Total Tokens:</b> {{ count }}</p>
+
+        <hr>
+
+        {% for app, token in tokens.items() %}
+            <div class="token">
+                <b>{{ app }}</b><br>
+                {{ token }}
+            </div>
+        {% endfor %}
+
+        <br>
+        <a href="/" style="color:#22c55e;">⬅ Back</a>
+    </div>
+</body>
+</html>
