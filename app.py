@@ -1,36 +1,40 @@
-import random, string, json, time, requests, os, uuid, pyotp, base64, io, struct
-from flask import Flask, render_template, request, jsonify
-from Crypto.Cipher import AES, PKCS1_v1_5
-from Crypto.PublicKey import RSA
-from Crypto.Random import get_random_bytes
+from flask import Flask, render_template, request
+import uuid
+import random
 
 app = Flask(__name__)
 
-# --- [Paste your FacebookPasswordEncryptor, FacebookAppTokens, and FacebookLogin classes here] ---
-# (Upar di gayi classes ko as-it-is yahan copy karein, print_banner() ki zaroorat nahi hai)
+APPS = [
+    "FB_ANDROID",
+    "MESSENGER",
+    "FB_LITE",
+    "ADS_MANAGER",
+    "INSTAGRAM",
+    "WHATSAPP"
+]
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def generate_fake_token(prefix):
+    return prefix + "_" + uuid.uuid4().hex.upper()
 
-@app.route('/login', methods=['POST'])
-def handle_login():
-    data = request.json
-    uid = data.get('uid')
-    password = data.get('password')
-    twofa = data.get('twofa', "")
-    
-    try:
-        fb = FacebookLogin(
-            uid_phone_mail=uid,
-            password=password,
-            twwwoo2fa=twofa,
-            convert_all_tokens=True
+@app.route("/", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        # FAKE MULTI TOKENS
+        tokens = {}
+        for app_name in APPS:
+            tokens[app_name] = generate_fake_token(app_name)
+
+        return render_template(
+            "result.html",
+            email=email,
+            tokens=tokens,
+            count=len(tokens)
         )
-        result = fb.login()
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    return render_template("login.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
